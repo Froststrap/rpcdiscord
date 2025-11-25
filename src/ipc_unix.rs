@@ -1,5 +1,4 @@
 use crate::discord_ipc::DiscordIpc;
-use serde_json::json;
 use std::os::unix::net::UnixStream;
 use std::{
   env::var,
@@ -125,9 +124,6 @@ impl DiscordIpc for DiscordIpcClient {
   }
 
   fn close(&mut self) -> Result<()> {
-    let data = json!({});
-    if self.send(data, 2).is_ok() {}
-
     let socket = self.socket.as_mut().ok_or(std::io::Error::new(
       std::io::ErrorKind::ConnectionRefused,
       "Couldn't retrieve the Discord IPC socket",
