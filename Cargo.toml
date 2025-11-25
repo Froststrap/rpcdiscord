@@ -1,7 +1,11 @@
 [package]
 name = "rpcdiscord"
-version = "0.2.6"
-authors = ["smokingplaya", "Violet <110789901+vionya@users.noreply.github.com>"]
+version = "1.0.0"
+authors = [
+  "smokingplaya",
+  "Invra <pacstrap@mx.idalon.org>",
+  "Violet <110789901+vionya@users.noreply.github.com>"
+]
 edition = "2018"
 description = "A simple, cross-platform crate for interfacing with Discord's IPC"
 readme = "README.md"

@@ -13,8 +13,10 @@ use {
 fn main() -> Result<(), ()> {
   let client_id = std::env::args()
     .nth(1)
-    .unwrap_or_else(|| "1442965508059300030".to_string());
-  let mut client = DiscordIpcClient::new(&client_id).unwrap();
+    .and_then(|arg| arg.parse::<u64>().ok())
+    .unwrap_or(1442965508059300030);
+
+  let mut client = DiscordIpcClient::new(client_id).unwrap();
 
   client.connect().unwrap();
 

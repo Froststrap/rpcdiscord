@@ -42,8 +42,8 @@ pub use ipc::DiscordIpcClient;
 ///
 /// # Examples
 /// ```
-/// let ipc_client = discord_ipc_client::new_client("<some client id>")?;
+/// let ipc_client = DiscordIpcClient::new(0000000000000000000u64)?;
 /// ```
-pub fn new_client(client_id: &str) -> Result<impl DiscordIpc, Box<dyn std::error::Error>> {
+pub fn new_client(client_id: u64) -> Result<impl DiscordIpc, Box<dyn std::error::Error>> {
   ipc::DiscordIpcClient::new(client_id)
 }

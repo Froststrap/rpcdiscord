@@ -40,9 +40,9 @@ impl DiscordIpcClient {
   ///
   /// # Examples
   /// ```
-  /// let ipc_client = DiscordIpcClient::new("<some client id>")?;
+  /// let ipc_client = DiscordIpcClient::new(0000000000000000000u64)?;
   /// ```
-  pub fn new(client_id: &str) -> Result<Self> {
+  pub fn new(client_id: u64) -> Result<Self> {
     let client = Self {
       client_id: client_id.to_string(),
       connected: false,
