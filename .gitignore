@@ -1,3 +1,11 @@
-/target
-Cargo.lock
+# Editor configs
+.vs
 .vscode
+
+# Build artifacts
+*.pdb
+target
+
+# Files not needed in the code-base
+**/*.rs.bk
+.env
