@@ -2,21 +2,24 @@ use crate::discord_ipc::DiscordIpc;
 use serde_json::json;
 use std::os::unix::net::UnixStream;
 use std::{
-    env::var,
-    error::Error,
-    io::{Read, Write},
-    net::Shutdown,
-    path::PathBuf,
+  env::var,
+  error::Error,
+  io::{
+    Read,
+    Write,
+  },
+  net::Shutdown,
+  path::PathBuf,
 };
 
 // Environment keys to search for the Discord pipe
 const ENV_KEYS: [&str; 4] = ["XDG_RUNTIME_DIR", "TMPDIR", "TMP", "TEMP"];
 
 const APP_SUBPATHS: [&str; 4] = [
-    "",
-    "app/com.discordapp.Discord/",
-    "snap.discord-canary/",
-    "snap.discord/",
+  "",
+  "app/com.discordapp.Discord/",
+  "snap.discord-canary/",
+  "snap.discord/",
 ];
 
 type Result<T> = std::result::Result<T, Box<dyn Error>>;
@@ -26,121 +29,120 @@ type Result<T> = std::result::Result<T, Box<dyn Error>>;
 /// A wrapper struct for the functionality contained in the
 /// underlying [`DiscordIpc`](trait@DiscordIpc) trait.
 pub struct DiscordIpcClient {
-    /// Client ID of the IPC client.
-    pub client_id: String,
-    connected: bool,
-    socket: Option<UnixStream>,
+  /// Client ID of the IPC client.
+  pub client_id: String,
+  connected: bool,
+  socket: Option<UnixStream>,
 }
 
 impl DiscordIpcClient {
-    /// Creates a new `DiscordIpcClient`.
-    ///
-    /// # Examples
-    /// ```
-    /// let ipc_client = DiscordIpcClient::new("<some client id>")?;
-    /// ```
-    pub fn new(client_id: &str) -> Result<Self> {
-        let client = Self {
-            client_id: client_id.to_string(),
-            connected: false,
-            socket: None,
-        };
+  /// Creates a new `DiscordIpcClient`.
+  ///
+  /// # Examples
+  /// ```
+  /// let ipc_client = DiscordIpcClient::new("<some client id>")?;
+  /// ```
+  pub fn new(client_id: &str) -> Result<Self> {
+    let client = Self {
+      client_id: client_id.to_string(),
+      connected: false,
+      socket: None,
+    };
 
-        Ok(client)
-    }
+    Ok(client)
+  }
 
-    fn get_pipe_pattern() -> PathBuf {
-        println!("{}", var("SNAP").is_ok());
-        let mut path = String::new();
+  fn get_pipe_pattern() -> PathBuf {
+    let mut path = String::new();
 
-        for key in &ENV_KEYS {
-            match var(key) {
-                Ok(val) => {
-                    if var("SNAP").is_ok() {
-                        if key == &ENV_KEYS[0] {
-                            path = val.rsplit_once('/').map(|(parent, _)| parent)
-                            .unwrap_or("").to_string();
-                        } 
-                    }
-                    else {
-                        path = val;
-                    }
-                    break;
-                }
-                Err(_e) => continue,
+    for key in &ENV_KEYS {
+      match var(key) {
+        Ok(val) => {
+          if var("SNAP").is_ok() {
+            if key == &ENV_KEYS[0] {
+              path = val
+                .rsplit_once('/')
+                .map(|(parent, _)| parent)
+                .unwrap_or("")
+                .to_string();
             }
+          } else {
+            path = val;
+          }
+          break;
         }
-        PathBuf::from(path)
+        Err(_e) => continue,
+      }
     }
+    PathBuf::from(path)
+  }
 }
 
 impl DiscordIpc for DiscordIpcClient {
-    fn connect_ipc(&mut self) -> Result<()> {
-        for i in 0..10 {
-            for subpath in APP_SUBPATHS {
-                let path = DiscordIpcClient::get_pipe_pattern()
-                    .join(subpath)
-                    .join(format!("discord-ipc-{}", i));
+  fn connect_ipc(&mut self) -> Result<()> {
+    for i in 0..10 {
+      for subpath in APP_SUBPATHS {
+        let path = DiscordIpcClient::get_pipe_pattern()
+          .join(subpath)
+          .join(format!("discord-ipc-{}", i));
 
-                println!("{}", path.display());
-
-                match UnixStream::connect(&path) {
-                    Ok(socket) => {
-                        self.socket = Some(socket);
-                        return Ok(());
-                    }
-                    Err(err) => {
-                        print!("{} ", err);
-                        continue;
-                    },
-                }
-            }
+        match UnixStream::connect(&path) {
+          Ok(socket) => {
+            self.socket = Some(socket);
+            return Ok(());
+          }
+          Err(err) => {
+            print!("{} ", err);
+            continue;
+          }
         }
-
-        Err("Couldn't connect to the Discord IPC socket".into())
+      }
     }
 
-    fn write(&mut self, data: &[u8]) -> Result<()> {
-        let socket = self.socket.as_mut().ok_or(std::io::Error::new(
-            std::io::ErrorKind::ConnectionRefused,
-            "Couldn't retrieve the Discord IPC socket",
-        ))?;
+    Err("Couldn't connect to the Discord IPC socket".into())
+  }
 
-        socket.write_all(data)?;
+  fn write(&mut self, data: &[u8]) -> Result<()> {
+    let socket = self.socket.as_mut().ok_or(std::io::Error::new(
+      std::io::ErrorKind::ConnectionRefused,
+      "Couldn't retrieve the Discord IPC socket",
+    ))?;
 
-        Ok(())
-    }
+    socket.write_all(data)?;
 
-    fn read(&mut self, buffer: &mut [u8]) -> Result<()> {
-        let socket = self.socket.as_mut().ok_or(std::io::Error::new(
-            std::io::ErrorKind::ConnectionRefused,
-            "Couldn't retrieve the Discord IPC socket",
-        ))?;
+    Ok(())
+  }
 
-        socket.read_exact(buffer)?;
+  fn read(&mut self, buffer: &mut [u8]) -> Result<()> {
+    let socket = self.socket.as_mut().ok_or(std::io::Error::new(
+      std::io::ErrorKind::ConnectionRefused,
+      "Couldn't retrieve the Discord IPC socket",
+    ))?;
 
-        Ok(())
-    }
+    socket.read_exact(buffer)?;
 
-    fn close(&mut self) -> Result<()> {
-        let data = json!({});
-        if self.send(data, 2).is_ok() {}
+    Ok(())
+  }
 
-        let socket = self.socket.as_mut().ok_or(std::io::Error::new(
-            std::io::ErrorKind::ConnectionRefused,
-            "Couldn't retrieve the Discord IPC socket",
-        ))?;
+  fn close(&mut self) -> Result<()> {
+    let data = json!({});
+    if self.send(data, 2).is_ok() {}
 
-        socket.flush()?;
-        match socket.shutdown(Shutdown::Both) {
-            Ok(()) => (),
-            Err(_err) => (),
-        };
+    let socket = self.socket.as_mut().ok_or(std::io::Error::new(
+      std::io::ErrorKind::ConnectionRefused,
+      "Couldn't retrieve the Discord IPC socket",
+    ))?;
 
-        Ok(())
-    }
+    socket.flush()?;
+    match socket.shutdown(Shutdown::Both) {
+      Ok(()) => (),
+      Err(_err) => (),
+    };
 
-    fn get_client_id(&self) -> &String {
-        &self.client_id
-    }
+    Ok(())
+  }
+
+  fn get_client_id(&self) -> &String {
+    &self.client_id
+  }
 }

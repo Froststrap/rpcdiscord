@@ -1,32 +1,36 @@
-use rpcdiscord::{activity, DiscordIpc, DiscordIpcClient};
+use rpcdiscord::{
+  DiscordIpc,
+  DiscordIpcClient,
+  activity,
+};
 use std::error::Error;
 
 #[test]
 fn test_reconnect() -> Result<(), Box<dyn Error>> {
-    let mut client = DiscordIpcClient::new("771124766517755954")?;
-    loop {
-        if client.connect().is_ok() {
-            break;
-        }
+  let mut client = DiscordIpcClient::new("771124766517755954")?;
+  loop {
+    if client.connect().is_ok() {
+      break;
+    }
+  }
+
+  loop {
+    let payload = activity::Activity::new()
+      .state("part 1 (test)")
+      .details("a placeholder")
+      .assets(
+        activity::Assets::new()
+          .large_image("large-image")
+          .large_text("a thing"),
+      );
+
+    if client.set_activity(payload).is_err() && client.reconnect().is_ok() {
+      continue;
     }
 
-    loop {
-        let payload = activity::Activity::new()
-            .state("part 1 (test)")
-            .details("a placeholder")
-            .assets(
-                activity::Assets::new()
-                    .large_image("large-image")
-                    .large_text("a thing"),
-            );
+    std::thread::sleep(std::time::Duration::from_secs(2));
+  }
 
-        if client.set_activity(payload).is_err() && client.reconnect().is_ok() {
-            continue;
-        }
-
-        std::thread::sleep(std::time::Duration::from_secs(2));
-    }
-
-    #[allow(unreachable_code)]
-    Ok(())
+  #[allow(unreachable_code)]
+  Ok(())
 }

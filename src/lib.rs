@@ -45,5 +45,5 @@ pub use ipc::DiscordIpcClient;
 /// let ipc_client = discord_ipc_client::new_client("<some client id>")?;
 /// ```
 pub fn new_client(client_id: &str) -> Result<impl DiscordIpc, Box<dyn std::error::Error>> {
-    ipc::DiscordIpcClient::new(client_id)
+  ipc::DiscordIpcClient::new(client_id)
 }
