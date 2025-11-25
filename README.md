@@ -2,7 +2,7 @@
 
 <!-- [![crates.io](https://img.shields.io/crates/v/rpcdiscord.svg)](https://crates.io/crates/discord-rich-presence) -->
 
-Fork of [rpc-discord](https://github.com/vionya/discord-rich-presence) crate
+Fork of [rpc-discord](https://github.com/vionya/discord-rich-presence) crate<br>
 Changes:
 * Client intialization with u64
 * Refactored examples
