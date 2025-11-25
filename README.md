@@ -37,6 +37,15 @@ You can provide an argument or it will default to a working application/client i
 cargo run --example presence -- <CLIENT_ID>
 ```
 
-### Licensing
+## Using this crate
+
+This crate is not (and probably wont be) uploaded to crates.io so this is how you use it:
+
+```toml
+  [depencencies]
+  rpcdiscord = { git = "https://github.com/Froststrap/rpcdiscord.git" }
+```
+
+## Licensing
 
 This project is licensed under [AGPLv3](./LICENSE).
