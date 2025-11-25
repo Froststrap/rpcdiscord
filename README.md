@@ -42,8 +42,8 @@ cargo run --example presence -- <CLIENT_ID>
 This crate is not (and probably wont be) uploaded to crates.io so this is how you use it:
 
 ```toml
-  [depencencies]
-  rpcdiscord = { git = "https://github.com/Froststrap/rpcdiscord.git" }
+[depencencies]
+rpcdiscord = { git = "https://github.com/Froststrap/rpcdiscord.git" }
 ```
 
 ## Licensing
