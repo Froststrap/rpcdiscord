@@ -7,14 +7,15 @@
 //!
 //! # Hello world
 //! ```
-//! use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
+//! use rpcdiscord::{activity, DiscordIpc, DiscordIpcClient};
 //!
 //! fn main() -> Result<(), Box<dyn std::error::Error>> {
-//!     let mut client = DiscordIpcClient::new("<some client id>")?;
+//!     let client = rpcdiscord::DiscordIpc::new(0000000000000000000u64)?;
 //!     client.connect()?;
 //!
 //!     let payload = activity::Activity::new().state("Hello world!");
 //!     client.set_activity(payload)?;
+//!     Ok(())
 //! }
 //! ```
 #![deny(missing_docs)]

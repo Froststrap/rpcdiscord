@@ -12,7 +12,7 @@ A simple, cross-platform crate to connect and send data to Discord's IPC. Specia
 ## Example
 
 ```rust
-use discord_rich_presence::{activity, DiscordIpc, DiscordIpcClient};
+use rpcdiscord::{activity, DiscordIpc, DiscordIpcClient};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let ipc_client = DiscordIpcClient::new(0000000000000000000u64)?;

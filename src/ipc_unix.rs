@@ -39,7 +39,7 @@ impl DiscordIpcClient {
   ///
   /// # Examples
   /// ```
-  /// let ipc_client = DiscordIpcClient::new(0000000000000000000u64)?;
+  /// let ipc_client = rpcdiscord::DiscordIpcClient::new(0000000000000000000u64)?;
   /// ```
   pub fn new(client_id: u64) -> Result<Self> {
     let client = Self {

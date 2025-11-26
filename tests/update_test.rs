@@ -7,7 +7,7 @@ use std::error::Error;
 
 #[test]
 fn test_updating() -> Result<(), Box<dyn Error>> {
-  let mut client = DiscordIpcClient::new(771124766517755954)?;
+  let mut client = DiscordIpcClient::new(1442965508059300030)?;
   client.connect()?;
 
   client.set_activity(

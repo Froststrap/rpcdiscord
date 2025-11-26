@@ -32,7 +32,8 @@ pub trait DiscordIpc {
   ///
   /// # Examples
   /// ```
-  /// let client = DiscordIpcClient::new(0000000000000000000u64)?;
+  /// use rpcdiscord::DiscordIpc;
+  /// let client = rpcdiscord::DiscordIpc::new(0000000000000000000u64)?;
   /// client.connect()?;
   /// ```
   fn connect(&mut self) -> Result<()> {
@@ -55,7 +56,9 @@ pub trait DiscordIpc {
   ///
   /// # Examples
   /// ```
-  /// let client = DiscordIpcClient::new(0000000000000000000u64)?;
+  /// use rpcdiscord::DiscordIpc;
+  ///
+  /// let client = rpcdiscord::DiscordIpcClient::new(0000000000000000000u64)?;
   /// client.connect()?;
   ///
   /// client.close()?;
@@ -111,6 +114,8 @@ pub trait DiscordIpc {
   ///
   /// # Examples
   /// ```
+  /// use rpcdiscord::DiscordIpc;
+  /// let client = rpcdiscord::DiscordIpcClient::new(0000000000000000000u64)?;
   /// let payload = serde_json::json!({ "field": "value" });
   /// client.send(payload, 0)?;
   /// ```
@@ -138,6 +143,8 @@ pub trait DiscordIpc {
   ///
   /// # Examples
   /// ```
+  /// use rpcdiscord::DiscordIpc;
+  /// let client = rpcdiscord::DiscordIpcClient::new(0000000000000000000u64)?;
   /// client.connect_ipc()?;
   /// client.send_handshake()?;
   ///

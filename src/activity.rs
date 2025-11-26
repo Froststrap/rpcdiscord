@@ -252,7 +252,7 @@ impl<'a> Party<'a> {
   /// ```
   /// // Creates a party with a current size
   /// // of 1, and a max size of 3
-  /// let party = Party::new().size([1, 3])
+  /// let party = Party::new().size([1, 3]);
   /// ```
   pub fn size(mut self, size: [i32; 2]) -> Self {
     self.size = Some(size);
